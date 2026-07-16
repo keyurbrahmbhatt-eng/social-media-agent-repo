@@ -1,0 +1,6 @@
+langflow
+chromadb
+sentence-transformers
+openai
+pandas
+numpy
