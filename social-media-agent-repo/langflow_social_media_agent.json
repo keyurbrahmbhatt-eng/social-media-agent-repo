@@ -1,4 +1,258 @@
 {
-  "name":"Social Media Agent using Agentic AI",
-  "version":"1.0"
+  "workflow": {
+    "name": "Social Media Agent using Agentic AI",
+    "description": "Intelligent Multi-Agent System for Social Media Marketing & Campaign Optimization",
+    "version": "1.0",
+    "nodes": [
+      {
+        "id": "chat_input",
+        "type": "ChatInput",
+        "config": {
+          "inputType": "Chat Message",
+          "placeholder": "Describe your campaign goal, product, target audience..."
+        }
+      },
+      {
+        "id": "system_prompt",
+        "type": "SystemPrompt",
+        "config": {
+          "template": "You are an expert social media marketing assistant. Help create content, analyze trends, predict engagement, and optimize campaigns across multiple platforms."
+        }
+      },
+      {
+        "id": "social_media_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Social Media AI Agent",
+          "role": "Social Media Marketing Agent",
+          "modelProvider": "IBM watsonx.ai",
+          "tools": [
+            "Trend Analysis",
+            "Content Generation",
+            "Sentiment Analysis",
+            "Engagement Prediction",
+            "Campaign Optimization",
+            "Scheduling & Publishing"
+          ],
+          "responseMode": "Streaming"
+        }
+      },
+      {
+        "id": "llm",
+        "type": "LLM",
+        "config": {
+          "provider": "IBM Granite",
+          "model": "granite-3-8b-instruct",
+          "temperature": 0.5
+        }
+      },
+      {
+        "id": "knowledge_base",
+        "type": "KnowledgeBase",
+        "config": {
+          "description": "Marketing resources, brand guidelines, campaigns, reports, articles, trend data"
+        }
+      },
+      {
+        "id": "text_splitter",
+        "type": "TextSplitter",
+        "config": {
+          "chunkSize": 1000,
+          "chunkOverlap": 200
+        }
+      },
+      {
+        "id": "embedding",
+        "type": "Embedding",
+        "config": {
+          "model": "granite-embedding-30m"
+        }
+      },
+      {
+        "id": "vector_db",
+        "type": "VectorDatabase",
+        "config": {
+          "database": "Chroma"
+        }
+      },
+      {
+        "id": "retriever",
+        "type": "Retriever",
+        "config": {
+          "topK": 5
+        }
+      },
+      {
+        "id": "rag",
+        "type": "RAGPipeline",
+        "config": {
+          "query": "From Agent",
+          "retriever": "From Retriever",
+          "combineDocs": "Stuff",
+          "returnSourceDocuments": true
+        }
+      },
+      {
+        "id": "trend_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Trend Analysis Agent",
+          "task": "Analyze trends, hashtags, competitors and industry insights",
+          "output": [
+            "Trending Topics",
+            "Hashtags",
+            "Competitor Strategy"
+          ]
+        }
+      },
+      {
+        "id": "content_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Content Generation Agent",
+          "task": "Generate social media posts, captions, hashtags, and image prompts",
+          "output": [
+            "Posts",
+            "Captions",
+            "Hashtags",
+            "Image Prompts"
+          ]
+        }
+      },
+      {
+        "id": "sentiment_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Sentiment Analysis Agent",
+          "task": "Analyze comments and social mentions",
+          "output": [
+            "Positive",
+            "Neutral",
+            "Negative",
+            "Insights"
+          ]
+        }
+      },
+      {
+        "id": "engagement_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Engagement Prediction Agent",
+          "task": "Predict reach, engagement rate, CTR and ROI",
+          "output": [
+            "Engagement Score",
+            "Reach Prediction",
+            "ROI Estimate"
+          ]
+        }
+      },
+      {
+        "id": "campaign_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Campaign Optimization Agent",
+          "task": "Recommend best posting schedule, platform, and campaign improvements",
+          "output": [
+            "Optimization Tips",
+            "Schedule Plan",
+            "Platform Suggestions"
+          ]
+        }
+      },
+      {
+        "id": "alert_agent",
+        "type": "Agent",
+        "config": {
+          "name": "Alert & Notification Agent",
+          "actions": [
+            "Improve Content",
+            "Optimize Timing",
+            "Schedule Now"
+          ],
+          "notification": [
+            "Email",
+            "SMS",
+            "Webhook"
+          ]
+        }
+      },
+      {
+        "id": "chat_output",
+        "type": "ChatOutput",
+        "config": {
+          "outputType": "Text"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "from": "chat_input",
+        "to": "social_media_agent"
+      },
+      {
+        "from": "system_prompt",
+        "to": "social_media_agent"
+      },
+      {
+        "from": "social_media_agent",
+        "to": "llm"
+      },
+      {
+        "from": "knowledge_base",
+        "to": "text_splitter"
+      },
+      {
+        "from": "text_splitter",
+        "to": "embedding"
+      },
+      {
+        "from": "embedding",
+        "to": "vector_db"
+      },
+      {
+        "from": "vector_db",
+        "to": "retriever"
+      },
+      {
+        "from": "retriever",
+        "to": "rag"
+      },
+      {
+        "from": "llm",
+        "to": "rag"
+      },
+      {
+        "from": "rag",
+        "to": "trend_agent"
+      },
+      {
+        "from": "rag",
+        "to": "content_agent"
+      },
+      {
+        "from": "rag",
+        "to": "sentiment_agent"
+      },
+      {
+        "from": "rag",
+        "to": "engagement_agent"
+      },
+      {
+        "from": "rag",
+        "to": "campaign_agent"
+      },
+      {
+        "from": "content_agent",
+        "to": "alert_agent"
+      },
+      {
+        "from": "campaign_agent",
+        "to": "alert_agent"
+      },
+      {
+        "from": "alert_agent",
+        "to": "chat_output"
+      }
+    ]
+  }
 }
